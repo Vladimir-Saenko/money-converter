@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+export default function App() {
+  const nowDateTime = new Date().toLocaleString();
 
-function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="app container-md">
+      <header>
+        <h1>КОНВЕРТЕР ВАЛЮТ ОНЛАЙН</h1>
       </header>
+      <div className="main">
+        {/* https://www.cbr-xml-daily.ru/daily_json.js */}
+        <CurrencySelect selectedValue={0} />
+        <button type="button" className="btn btn-primary btn-left-right">
+          ↔
+        </button>
+        <CurrencySelect selectedValue={2} />
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Введите сумму..."
+        />
+        <span></span>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Расчетное значение..."
+          disabled
+        />
+      </div>
+
+      <footer>Сейчас: {nowDateTime}</footer>
     </div>
   );
 }
 
-export default App;
+function CurrencySelect({ selectedValue }) {
+  return (
+    <select className="form-select form-select-sm">
+      <option value={0}>Российский рубль [RUR]</option>
+      <option value={1}>Доллар США [USD]</option>
+      <option value={2}>Евро [EUR]</option>
+      <option value={3}>Китайский юань[CYN]</option>
+    </select>
+  );
+}
