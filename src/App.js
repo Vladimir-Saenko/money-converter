@@ -1,5 +1,26 @@
+import { useState } from "react";
+
 export default function App() {
   const nowDateTime = new Date().toLocaleString();
+  const [fromCurrency, setFromCurrency] = useState(0);
+  const [toCurrency, setToCurrency] = useState(2);
+
+  function handleChangeFromCurrency(selected) {
+    setFromCurrency(selected);
+    //
+  }
+
+  function handleChangeToCurrency(selected) {
+    setToCurrency(selected);
+    //
+  }
+
+  function handleCurrencyReverse() {
+    const temp = fromCurrency;
+    setFromCurrency(toCurrency);
+    setToCurrency(temp);
+    console.log(`Currency reversed ${fromCurrency} <-> ${toCurrency}`);
+  }
 
   return (
     <div className="app container-md">
@@ -8,11 +29,23 @@ export default function App() {
       </header>
       <div className="main">
         {/* https://www.cbr-xml-daily.ru/daily_json.js */}
-        <CurrencySelect selectedValue={0} />
-        <button type="button" className="btn btn-primary btn-left-right">
+        <CurrencySelect
+          key={"from"}
+          selectedCurrency={fromCurrency}
+          onChangeCurrency={handleChangeFromCurrency}
+        />
+        <button
+          type="button"
+          className="btn btn-primary btn-left-right"
+          onClick={() => handleCurrencyReverse()}
+        >
           ↔
         </button>
-        <CurrencySelect selectedValue={2} />
+        <CurrencySelect
+          key={"to"}
+          selectedCurrency={toCurrency}
+          onChangeCurrency={handleChangeToCurrency}
+        />
         <input
           type="text"
           className="form-control"
@@ -32,9 +65,13 @@ export default function App() {
   );
 }
 
-function CurrencySelect({ selectedValue }) {
+function CurrencySelect({ selectedCurrency, onChangeCurrency }) {
   return (
-    <select className="form-select form-select-sm">
+    <select
+      className="form-select form-select-sm"
+      value={selectedCurrency}
+      onChange={(e) => onChangeCurrency(e.target.value)}
+    >
       <option value={0}>Российский рубль [RUR]</option>
       <option value={1}>Доллар США [USD]</option>
       <option value={2}>Евро [EUR]</option>
