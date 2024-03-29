@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
+  const queryCourse = "https://www.cbr-xml-daily.ru/latest.js"; //"https://www.cbr-xml-daily.ru/daily_json.js";
   const nowDateTime = new Date().toLocaleString();
   const [fromCurrency, setFromCurrency] = useState(0);
   const [toCurrency, setToCurrency] = useState(2);
+  const [ratesCurrency, setRateCurrency] = useState({});
 
   function handleChangeFromCurrency(selected) {
     setFromCurrency(selected);
@@ -22,13 +24,30 @@ export default function App() {
     console.log(`Currency reversed ${fromCurrency} <-> ${toCurrency}`);
   }
 
+  const { date, base, rates } = ratesCurrency;
+  console.log(date, base, rates);
+
+  useEffect(function () {
+    async function fetchCourse() {
+      // запрос на сервер
+      try {
+        const res = await fetch(queryCourse);
+        if (!res.ok) throw new Error("Error!");
+        const data = await res.json();
+        setRateCurrency(data);
+      } catch (err) {
+        console.log(err.Message);
+      }
+    }
+    fetchCourse();
+  }, []);
+
   return (
     <div className="app container-md">
       <header>
         <h1>КОНВЕРТЕР ВАЛЮТ ОНЛАЙН</h1>
       </header>
       <div className="main">
-        {/* https://www.cbr-xml-daily.ru/daily_json.js */}
         <CurrencySelect
           key={"from"}
           selectedCurrency={fromCurrency}
@@ -61,6 +80,7 @@ export default function App() {
       </div>
 
       <footer>Сейчас: {nowDateTime}</footer>
+      <a href="https://www.cbr-xml-daily.ru/">Курсы ЦБ РФ в XML и JSON, API</a>
     </div>
   );
 }
