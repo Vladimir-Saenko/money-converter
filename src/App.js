@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function App() {
-  const queryCourse = "https://www.cbr-xml-daily.ru/latest.js"; //"https://www.cbr-xml-daily.ru/daily_json.js";
+  const queryCourse = "https://www.cbr-xml-daily.ru/daily_json.js"; //"https://www.cbr-xml-daily.ru/latest.js";
   const nowDateTime = new Date().toLocaleString();
   const [fromCurrency, setFromCurrency] = useState(0);
   const [toCurrency, setToCurrency] = useState(2);
@@ -24,17 +24,19 @@ export default function App() {
     console.log(`Currency reversed ${fromCurrency} <-> ${toCurrency}`);
   }
 
-  const { date, base, rates } = ratesCurrency;
-  console.log(date, base, rates);
+  const { Date: date, Valute: rates } = ratesCurrency;
+  console.log(date.toLocaleString(), rates);
 
   useEffect(function () {
     async function fetchCourse() {
       // запрос на сервер
       try {
         const res = await fetch(queryCourse);
-        if (!res.ok) throw new Error("Error!");
+        if (!res.ok) throw new Error("Error loading rates...");
         const data = await res.json();
         setRateCurrency(data);
+        console.log("Rates loaded.");
+        console.log(data);
       } catch (err) {
         console.log(err.Message);
       }
