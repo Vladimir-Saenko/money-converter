@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 export default function App() {
   const queryCourse = "https://www.cbr-xml-daily.ru/daily_json.js"; //"https://www.cbr-xml-daily.ru/latest.js";
-  const nowDateTime = new Date().toLocaleString();
   const [fromCurrency, setFromCurrency] = useState(0);
   const [toCurrency, setToCurrency] = useState(2);
   const [ratesCurrency, setRateCurrency] = useState({});
@@ -24,8 +23,26 @@ export default function App() {
     console.log(`Currency reversed ${fromCurrency} <-> ${toCurrency}`);
   }
 
-  const { Date: date, Valute: rates } = ratesCurrency;
-  console.log(date.toLocaleString(), rates);
+  const { Date: ratesDate, Valute: rates } = ratesCurrency;
+
+  let currArray = [
+    {
+      code: "RUR",
+      nominal: 1,
+      value: 1,
+      name: "Российский рубль",
+    },
+  ];
+  for (var key in rates) {
+    currArray.push({
+      code: rates[key].CharCode,
+      nominal: rates[key].Nominal,
+      value: rates[key].Value,
+      name: rates[key].Name,
+    });
+  }
+
+  console.log(ratesDate, currArray);
 
   useEffect(function () {
     async function fetchCourse() {
@@ -81,7 +98,7 @@ export default function App() {
         />
       </div>
 
-      <footer>Сейчас: {nowDateTime}</footer>
+      <footer>Курсы установлены: {ratesDate}</footer>
       <a href="https://www.cbr-xml-daily.ru/">Курсы ЦБ РФ в XML и JSON, API</a>
     </div>
   );
