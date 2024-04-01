@@ -27,9 +27,9 @@ export default function App() {
   const { Date: ratesDateTime, Valute: rates } = ratesCurrency;
 
   const ratesDate =
-    ratesDateTime.split("T")[0] +
+    ratesDateTime?.split("T")[0] +
     " " +
-    ratesDateTime.split("T")[1].split("+")[0] +
+    ratesDateTime?.split("T")[1].split("+")[0] +
     " Мск";
 
   let currArray = [
