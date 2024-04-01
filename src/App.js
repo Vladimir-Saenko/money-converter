@@ -5,6 +5,7 @@ export default function App() {
   const [fromCurrency, setFromCurrency] = useState(0);
   const [toCurrency, setToCurrency] = useState(15);
   const [ratesCurrency, setRateCurrency] = useState({});
+  const [sum, setSum] = useState(0);
 
   function handleChangeFromCurrency(selected) {
     setFromCurrency(selected);
@@ -23,7 +24,13 @@ export default function App() {
     console.log(`Currency reversed ${fromCurrency} <-> ${toCurrency}`);
   }
 
-  const { Date: ratesDate, Valute: rates } = ratesCurrency;
+  const { Date: ratesDateTime, Valute: rates } = ratesCurrency;
+
+  const ratesDate =
+    ratesDateTime.split("T")[0] +
+    " " +
+    ratesDateTime.split("T")[1].split("+")[0] +
+    " Мск";
 
   let currArray = [
     {
@@ -41,6 +48,10 @@ export default function App() {
       name: rates[key].Name,
     });
   }
+
+  const calcKoef =
+    currArray[fromCurrency]?.value /
+    (currArray[toCurrency]?.value / currArray[toCurrency]?.nominal);
 
   console.log(ratesDate, currArray);
 
@@ -89,28 +100,28 @@ export default function App() {
         <input
           type="text"
           className="form-control"
+          value={sum}
           placeholder="Введите сумму..."
+          onChange={(e) => setSum(Number(e.target.value))}
         />
         <span></span>
         <input
           type="text"
           className="form-control"
+          value={((sum * calcKoef) / currArray[fromCurrency].nominal).toFixed(
+            2
+          )}
           placeholder="Расчетное значение..."
           disabled
         />
       </div>
       <div style={{ marginTop: "1em" }}>
-        {/*currArray.length && (
-          <p>
+        {calcKoef && (
+          <span>
             {currArray[fromCurrency].nominal} {currArray[fromCurrency].name} ={" "}
-            {Math.round(
-              (currArray[fromCurrency].value /
-                (currArray[toCurrency].value / currArray[toCurrency].nominal)) *
-                100
-            ) / 100}{" "}
-            {currArray[toCurrency].name}
-          </p>
-            )*/}
+            {Math.round(calcKoef * 100) / 100} {currArray[toCurrency].name}
+          </span>
+        )}
       </div>
 
       <footer>Курсы установлены: {ratesDate}</footer>
