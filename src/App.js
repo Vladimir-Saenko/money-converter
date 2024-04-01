@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export default function App() {
   const queryCourse = "https://www.cbr-xml-daily.ru/daily_json.js"; //"https://www.cbr-xml-daily.ru/latest.js";
   const [fromCurrency, setFromCurrency] = useState(0);
-  const [toCurrency, setToCurrency] = useState(2);
+  const [toCurrency, setToCurrency] = useState(15);
   const [ratesCurrency, setRateCurrency] = useState({});
 
   function handleChangeFromCurrency(selected) {
@@ -69,6 +69,7 @@ export default function App() {
       <div className="main">
         <CurrencySelect
           key={"from"}
+          currList={currArray}
           selectedCurrency={fromCurrency}
           onChangeCurrency={handleChangeFromCurrency}
         />
@@ -81,6 +82,7 @@ export default function App() {
         </button>
         <CurrencySelect
           key={"to"}
+          currList={currArray}
           selectedCurrency={toCurrency}
           onChangeCurrency={handleChangeToCurrency}
         />
@@ -97,6 +99,19 @@ export default function App() {
           disabled
         />
       </div>
+      <div style={{ marginTop: "1em" }}>
+        {/*currArray.length && (
+          <p>
+            {currArray[fromCurrency].nominal} {currArray[fromCurrency].name} ={" "}
+            {Math.round(
+              (currArray[fromCurrency].value /
+                (currArray[toCurrency].value / currArray[toCurrency].nominal)) *
+                100
+            ) / 100}{" "}
+            {currArray[toCurrency].name}
+          </p>
+            )*/}
+      </div>
 
       <footer>Курсы установлены: {ratesDate}</footer>
       <a href="https://www.cbr-xml-daily.ru/">Курсы ЦБ РФ в XML и JSON, API</a>
@@ -104,17 +119,18 @@ export default function App() {
   );
 }
 
-function CurrencySelect({ selectedCurrency, onChangeCurrency }) {
+function CurrencySelect({ selectedCurrency, currList, onChangeCurrency }) {
   return (
     <select
       className="form-select form-select-sm"
       value={selectedCurrency}
       onChange={(e) => onChangeCurrency(e.target.value)}
     >
-      <option value={0}>Российский рубль [RUR]</option>
-      <option value={1}>Доллар США [USD]</option>
-      <option value={2}>Евро [EUR]</option>
-      <option value={3}>Китайский юань[CYN]</option>
+      {currList.map((curr, i) => (
+        <option value={i}>
+          {curr.name} [{curr.code}]
+        </option>
+      ))}
     </select>
   );
 }
